@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import "package:dart_date/dart_date.dart";
 
@@ -9,13 +10,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Messenger App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 185, 142, 241)),
-        useMaterial3: true,
-      ),
-      home: MyHomePage(title: 'Messenger Main Page', chatList: chatList),
+    return DynamicColorBuilder(builder: (lightColorScheme, darkColorScheme)
+    {
+      return MaterialApp(
+        title: 'Messenger App',
+        theme: ThemeData(
+          colorScheme: lightColorScheme ?? ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 185, 142, 241)),
+          useMaterial3: true,
+        ),
+        darkTheme: ThemeData(
+          colorScheme: darkColorScheme ?? ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 185, 142, 241), brightness: Brightness.dark),
+          useMaterial3: true,
+        ),
+        themeMode: ThemeMode.system,
+        home: MyHomePage(title: 'Messenger Main Page', chatList: chatList),
+      );
+    }
     );
   }
 }
