@@ -3,7 +3,9 @@ import "package:dart_date/dart_date.dart";
 
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.chatList});
+
+  final List<ChatInfo> chatList;
 
   @override
   Widget build(BuildContext context) {
@@ -13,15 +15,16 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 185, 142, 241)),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Messenger Main Page'),
+      home: MyHomePage(title: 'Messenger Main Page', chatList: chatList),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.chatList});
 
   final String title;
+  final List<ChatInfo> chatList;
   
   @override
   Widget build(BuildContext context) {
@@ -38,35 +41,25 @@ class MyHomePage extends StatelessWidget {
           onPressed: () {},
         )],
       ),
-      body: ListView(
-        children: [
-          ChatTile(
-            info: ChatTileInfo(name: "Apple Appovich", lastMessage: "Test message", date: DateTime(2023, 6, 29, 10).toLocalTime)
-          ),
-          ChatTile(
-            info: ChatTileInfo(name: "Test Name", lastMessage: "Bubble Tea", date: DateTime(2021, 6, 29, 10).toLocalTime)
-          ),
-          ChatTile(
-            info: ChatTileInfo(name: "NoName Inc.")
-          )
-        ]
-      )
+      body: ListView.builder(itemCount: chatList.length, itemBuilder: (BuildContext context, int index) {
+        return ChatTile(info: chatList[index]);
+      })
     );
   }
 }
 
 class ChatTile extends StatelessWidget {
-  final ChatTileInfo info;
+  final ChatInfo info;
 
   static String _getTimeString(DateTime? time, BuildContext context) {
     if (time == null) return "";
     DateTime currentTime = DateTime.now().toLocalTime;
     if (currentTime.isSameDay(time)) return time.format("Hms");
     if (currentTime.year == time.year) {
-      if (currentTime.getWeek == time.getWeek) return time.format("d MMM");
-      return time.format("EEEE");
+      if (currentTime.getWeek == time.getWeek) return time.format("EEEE");
+      return time.format("d MMM");
     }
-    return time.format("d MMM y", Localizations.localeOf(context).languageCode);
+    return time.format("d MMM y");
   }
 
   const ChatTile({super.key, required this.info});
@@ -75,18 +68,40 @@ class ChatTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       key: key,
-      leading: CircleAvatar(backgroundColor: Theme.of(context).disabledColor, foregroundImage: info.image),
+      leading: CircleAvatar(
+        backgroundColor: Theme.of(context).disabledColor,
+        foregroundImage: info.image == null ? null : AssetImage(info.image!),
+        child: Text(info.name[0]),
+      ),
       title: Text(info.name),
-      subtitle: Column(key: key, crossAxisAlignment: CrossAxisAlignment.start, children: [Text(info.lastMessage = info.lastMessage ?? "", overflow: TextOverflow.ellipsis), Text(_getTimeString(info.date, context))])
+      subtitle: Column(
+        key: key,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(info.lastMessage = info.lastMessage ?? "", overflow: TextOverflow.ellipsis),
+          Text(_getTimeString(info.date, context))
+        ]
+      )
     );
   }
 }
 
-class ChatTileInfo {
-  ImageProvider<Object>? image;
+class ChatInfo {
+  String? image;
   String name;
   String? lastMessage;
   DateTime? date;
+  int unreadMessagesCount;
 
-  ChatTileInfo({required this.name, this.image, this.lastMessage, this.date});
+  ChatInfo({required this.name, this.image, this.lastMessage, this.date, required this.unreadMessagesCount});
+
+  factory ChatInfo.fromJSON(Map<String, dynamic> map) {
+    return ChatInfo(
+      name: map["userName"] ?? "Name Undefined",
+      image: map["userAvatar"] == null ? null : "assets/data/avatars/${map["userAvatar"]}",
+      lastMessage: map["lastMessage"],
+      date: map["date"] == null ? null : DateTime.fromMillisecondsSinceEpoch(map["date"]),
+      unreadMessagesCount: map["countUnreadMessages"]
+    );
+  }
 }
