@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import "package:dart_date/dart_date.dart";
@@ -52,16 +54,45 @@ class MyHomePage extends StatelessWidget {
         )],
       ),
       body: ListView.builder(itemCount: chatList.length, itemBuilder: (BuildContext context, int index) {
-        return ChatTile(info: chatList[index]);
+        return ChatTile(info: chatList[index], number: index);
       })
     );
   }
 }
 
-class ChatTile extends StatelessWidget {
-  final ChatInfo info;
+mixin ColorGenerator on Widget {
+  Color _generateColor({int? seed}) {
+    Random random = Random(seed);
+    return Color.fromARGB(
+        255,
+        random.nextInt(256),
+        random.nextInt(256),
+        random.nextInt(256)
+      );
+  }
 
-  static String _getTimeString(DateTime? time, BuildContext context) {
+  List<Color> _generateColors(int number, {int? seed}) {
+    Random random = Random(seed);
+    List<Color> colors = <Color>[];
+    for (int i = 0; i < number; i++) {
+      colors.add(Color.fromARGB(
+        255,
+        random.nextInt(256),
+        random.nextInt(256),
+        random.nextInt(256)
+      ));
+    }
+    return colors;
+  }
+}
+
+class ChatTile extends StatelessWidget with ColorGenerator {
+  final ChatInfo info;
+  final int number;
+
+  const ChatTile({super.key, required this.info, required this.number});
+  
+  String _getTimeString(DateTime? time, BuildContext context) {
     if (time == null) return "";
     DateTime currentTime = DateTime.now().toLocalTime;
     if (currentTime.isSameDay(time)) return time.format("Hms");
@@ -71,17 +102,25 @@ class ChatTile extends StatelessWidget {
     }
     return time.format("d MMM y");
   }
-
-  const ChatTile({super.key, required this.info});
-
+  
   @override
   Widget build(BuildContext context) {
     return ListTile(
       key: key,
-      leading: CircleAvatar(
-        backgroundColor: Theme.of(context).disabledColor,
-        foregroundImage: info.image == null ? null : AssetImage(info.image!),
-        child: Text(info.name[0]),
+      leading: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            colors: [_generateColor(seed: number), Theme.of(context).canvasColor],
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter
+          )
+        ),
+        child: CircleAvatar(
+          foregroundImage: info.image == null ? null : AssetImage(info.image!),
+          backgroundColor: Colors.transparent,
+          child: Text(info.name[0]),
+        )
       ),
       title: Text(info.name),
       subtitle: Column(
@@ -111,7 +150,7 @@ class ChatInfo {
       image: map["userAvatar"] == null ? null : "assets/data/avatars/${map["userAvatar"]}",
       lastMessage: map["lastMessage"],
       date: map["date"] == null ? null : DateTime.fromMillisecondsSinceEpoch(map["date"]),
-      unreadMessagesCount: map["countUnreadMessages"]
+      unreadMessagesCount: map["countUnreadMessages"] ?? 0
     );
   }
 }
