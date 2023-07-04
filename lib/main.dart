@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import "package:flutter_practice/src/app.dart";
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  List<ChatInfo> chatList = await _loadChatList();
-  runApp(MyApp(chatList: chatList));
+  chatList = await _loadChatList();
+  runApp(const MyApp());
 }
 
 Future<List<ChatInfo>> _loadChatList() async {

@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import "package:dart_date/dart_date.dart";
+import 'package:flutter_practice/src/chat_search.dart';
 
+late final List<ChatInfo> chatList;
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.chatList});
-
-  final List<ChatInfo> chatList;
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         themeMode: ThemeMode.system,
-        home: MyHomePage(title: 'Messenger Main Page', chatList: chatList),
+        home: const MyHomePage(title: 'Messenger Main Page'),
       );
     }
     );
@@ -33,10 +33,9 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title, required this.chatList});
+  const MyHomePage({super.key, required this.title});
 
   final String title;
-  final List<ChatInfo> chatList;
   
   @override
   Widget build(BuildContext context) {
@@ -50,7 +49,7 @@ class MyHomePage extends StatelessWidget {
         ),
         actions: [IconButton(
           icon: const Icon(Icons.search),
-          onPressed: () {},
+          onPressed: () => Navigator.push(context, PageRouteBuilder(pageBuilder: (context, __, ___) => const ChatSearchWidget())),
         )],
       ),
       body: ListView.builder(itemCount: chatList.length, itemBuilder: (BuildContext context, int index) {
