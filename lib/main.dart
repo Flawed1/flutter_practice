@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import "package:flutter_practice/src/app.dart";
@@ -10,7 +10,7 @@ import "package:window_manager/window_manager.dart";
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   chatList = await _loadChatList();
-  if (Platform.isLinux || Platform.isMacOS || Platform.isWindows){
+  if (!kIsWeb && (Platform.isLinux || Platform.isMacOS || Platform.isWindows)){
     windowManager.setMinimumSize(const Size(300, 200));
   }
   runApp(const MyApp());
