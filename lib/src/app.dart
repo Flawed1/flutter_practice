@@ -47,10 +47,16 @@ class MyHomePage extends StatelessWidget {
           icon: const Icon(Icons.menu),
           onPressed: () {},
         ),
-        actions: [IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: () => Navigator.push(context, PageRouteBuilder(pageBuilder: (context, __, ___) => const ChatSearchWidget())),
-        )],
+        actions: [
+          Tooltip(
+            message: "Search",
+            waitDuration: const Duration(seconds: 1),
+            child: IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () => Navigator.push(context, PageRouteBuilder(pageBuilder: (context, __, ___) => const ChatSearchWidget())),
+            )
+          )
+        ],
       ),
       body: ListView.builder(
         itemCount: chatList.length,
