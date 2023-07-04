@@ -117,9 +117,32 @@ class ChatTile extends StatelessWidget with ColorGenerator {
           )
         ),
         child: CircleAvatar(
-          foregroundImage: info.image == null ? null : AssetImage(info.image!),
+          maxRadius: 35,
+          backgroundImage: info.image == null ? null : AssetImage(info.image!),
           backgroundColor: Colors.transparent,
-          child: Text(info.name[0]),
+          child: Stack(
+            children: <Widget>[
+              Align(
+                alignment: Alignment.center,
+                child: info.image == null ? Text(info.name[0]) : null
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: info.unreadMessagesCount == 0 ? null : CircleAvatar(
+                  maxRadius: 10,
+                  backgroundColor: const Color.fromARGB(255, 216, 20, 20),
+                  child: Text(
+                    info.unreadMessagesCount.toString(),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      fontSize: 12
+                    )
+                  ),
+                ),
+              )
+            ]
+          )
         )
       ),
       title: Text(info.name),
@@ -150,7 +173,7 @@ class ChatInfo {
       image: map["userAvatar"] == null ? null : "assets/data/avatars/${map["userAvatar"]}",
       lastMessage: map["lastMessage"],
       date: map["date"] == null ? null : DateTime.fromMillisecondsSinceEpoch(map["date"]),
-      unreadMessagesCount: map["countUnreadMessages"] ?? 0
+      unreadMessagesCount: map["countUnreadMessages"] != null && map["countUnreadMessages"] >= 0 ? map["countUnreadMessages"] : 0
     );
   }
 }
