@@ -22,6 +22,12 @@ class _ChatSearchState extends State<ChatSearchWidget> {
         ),
         title: TextField(
           autofocus: true,
+          decoration: const InputDecoration(
+            hintText: "Search",
+            hintStyle: TextStyle(
+              fontWeight: FontWeight.w300
+            )
+          ),
           onChanged: (String? searchQuery) {
             setState(() {
               _matchingChats = _getChatsByQuery(searchQuery);
