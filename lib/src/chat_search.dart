@@ -29,9 +29,12 @@ class _ChatSearchState extends State<ChatSearchWidget> {
           },
         ),
       ),
-      body: ListView.builder(itemCount: _matchingChats.length, itemBuilder: (BuildContext context, int index) {
-        return ChatTile(info: _matchingChats[index], number: index);
-      }),
+      body: ListView.builder(
+        itemCount: _matchingChats.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ChatTile(info: _matchingChats[index], number: index);
+        }
+      ),
     );
   }
 

@@ -52,9 +52,12 @@ class MyHomePage extends StatelessWidget {
           onPressed: () => Navigator.push(context, PageRouteBuilder(pageBuilder: (context, __, ___) => const ChatSearchWidget())),
         )],
       ),
-      body: ListView.builder(itemCount: chatList.length, itemBuilder: (BuildContext context, int index) {
-        return ChatTile(info: chatList[index], number: index);
-      })
+      body: ListView.builder(
+        itemCount: chatList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ChatTile(info: chatList[index], number: index);
+        }
+      )
     );
   }
 }
@@ -106,6 +109,7 @@ class ChatTile extends StatelessWidget with ColorGenerator {
   Widget build(BuildContext context) {
     return ListTile(
       key: key,
+      onTap: () {},
       leading: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -116,7 +120,7 @@ class ChatTile extends StatelessWidget with ColorGenerator {
           )
         ),
         child: CircleAvatar(
-          maxRadius: 35,
+          maxRadius: 25,
           backgroundImage: info.image == null ? null : AssetImage(info.image!),
           backgroundColor: Colors.transparent,
           child: Stack(
@@ -135,7 +139,8 @@ class ChatTile extends StatelessWidget with ColorGenerator {
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     style: const TextStyle(
-                      fontSize: 12
+                      fontSize: 12,
+                      color: Colors.white
                     )
                   ),
                 ),
