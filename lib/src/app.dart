@@ -17,11 +17,11 @@ class MyApp extends StatelessWidget {
       return MaterialApp(
         title: 'Messenger App',
         theme: ThemeData(
-          colorScheme: lightColorScheme ?? ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 185, 142, 241)),
+          colorScheme: lightColorScheme ?? ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 127, 104, 231)),
           useMaterial3: true,
         ),
         darkTheme: ThemeData(
-          colorScheme: darkColorScheme ?? ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 185, 142, 241), brightness: Brightness.dark),
+          colorScheme: darkColorScheme ?? ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 127, 104, 231), brightness: Brightness.dark),
           useMaterial3: true,
         ),
         themeMode: ThemeMode.system,
