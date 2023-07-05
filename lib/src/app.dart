@@ -25,24 +25,35 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         themeMode: ThemeMode.system,
-        home: const MyHomePage(title: 'Messenger Main Page'),
+        home: const MyHomePage(),
       );
     }
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
   
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final FocusNode _tileFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _tileFocusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title),
+        title: const Text("Messenger Main Page"),
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () {},
@@ -72,7 +83,38 @@ class MyHomePage extends StatelessWidget {
       body: ListView.builder(
         itemCount: chatList.length,
         itemBuilder: (BuildContext context, int index) {
-          return ChatTile(info: chatList[index], number: index);
+          return MenuAnchor(
+            childFocusNode: _tileFocusNode,
+            anchorTapClosesMenu: true,
+            builder: (context, controller, child) {
+              return ChatTile(
+                info: chatList[index],
+                number: index,
+                focusNode: _tileFocusNode,
+                onLongPress: () {
+                  if (controller.isOpen) {
+                    controller.close();
+                  }
+                  else {
+                    controller.open();
+                  }
+                }
+              );
+            },
+            menuChildren: <Widget>[
+              MenuItemButton(
+                leadingIcon: const Icon(Icons.chat_bubble_rounded),
+                onPressed: chatList[index].unreadMessagesCount == 0 ?
+                null :
+                () {
+                  setState(() {
+                    chatList[index].unreadMessagesCount = 0;
+                  });
+                },
+                child: const Text("Mark as read")
+              )
+            ],
+          );
         }
       )
     );
@@ -108,8 +150,11 @@ mixin ColorGenerator on Widget {
 class ChatTile extends StatelessWidget with ColorGenerator {
   final ChatInfo info;
   final int number;
+  final FocusNode? focusNode;
+  final void Function()? onTap;
+  final void Function()? onLongPress;
 
-  const ChatTile({super.key, required this.info, required this.number});
+  const ChatTile({super.key, required this.info, required this.number, this.focusNode, this.onTap, this.onLongPress});
   
   String _getTimeString(DateTime? time, BuildContext context) {
     if (time == null) return "";
@@ -126,7 +171,9 @@ class ChatTile extends StatelessWidget with ColorGenerator {
   Widget build(BuildContext context) {
     return ListTile(
       key: key,
-      onTap: () {},
+      onTap: onTap ?? () {},
+      focusNode: focusNode,
+      onLongPress: onLongPress,
       leading: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
