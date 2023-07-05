@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import "package:flutter_practice/src/app.dart";
 import "dart:io";
 import "package:window_manager/window_manager.dart";
+import 'package:flutter_practice/src/chat_info.dart';
 
 
 void main() async {

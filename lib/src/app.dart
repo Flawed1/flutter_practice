@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
-import "package:dart_date/dart_date.dart";
 import 'package:flutter_practice/src/chat_search.dart';
+import 'package:flutter_practice/src/chat_tile.dart';
+import 'package:flutter_practice/src/chat_info.dart';
 
 late final List<ChatInfo> chatList;
 
@@ -140,131 +139,6 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         }
       )
-    );
-  }
-}
-
-mixin ColorGenerator on Widget {
-  Color _generateColor({int? seed}) {
-    Random random = Random(seed);
-    return Color.fromARGB(
-        255,
-        random.nextInt(256),
-        random.nextInt(256),
-        random.nextInt(256)
-      );
-  }
-
-  List<Color> _generateColors(int number, {int? seed}) {
-    Random random = Random(seed);
-    List<Color> colors = <Color>[];
-    for (int i = 0; i < number; i++) {
-      colors.add(Color.fromARGB(
-        255,
-        random.nextInt(256),
-        random.nextInt(256),
-        random.nextInt(256)
-      ));
-    }
-    return colors;
-  }
-}
-
-class ChatTile extends StatelessWidget with ColorGenerator {
-  final ChatInfo info;
-  final int number;
-  final FocusNode? focusNode;
-  final void Function()? onTap;
-  final void Function()? onLongPress;
-
-  const ChatTile({super.key, required this.info, required this.number, this.focusNode, this.onTap, this.onLongPress});
-  
-  String _getTimeString(DateTime? time, BuildContext context) {
-    if (time == null) return "";
-    DateTime currentTime = DateTime.now().toLocalTime;
-    if (currentTime.isSameDay(time)) return time.format("Hms");
-    if (currentTime.year == time.year) {
-      if (currentTime.getWeek == time.getWeek) return time.format("EEEE");
-      return time.format("d MMM");
-    }
-    return time.format("d MMM y");
-  }
-  
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      key: key,
-      onTap: onTap ?? () {},
-      focusNode: focusNode,
-      onLongPress: onLongPress,
-      leading: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [_generateColor(seed: number), Theme.of(context).canvasColor],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter
-          )
-        ),
-        child: CircleAvatar(
-          maxRadius: 25,
-          backgroundImage: info.image == null ? null : AssetImage(info.image!),
-          backgroundColor: Colors.transparent,
-          child: Stack(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.center,
-                child: info.image == null ? Text(info.name[0]) : null
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: info.unreadMessagesCount == 0 ? null : CircleAvatar(
-                  maxRadius: 10,
-                  backgroundColor: const Color.fromARGB(255, 216, 20, 20),
-                  child: Text(
-                    info.unreadMessagesCount.toString(),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.white
-                    )
-                  ),
-                ),
-              )
-            ]
-          )
-        )
-      ),
-      title: Text(info.name),
-      subtitle: Column(
-        key: key,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(info.lastMessage = info.lastMessage ?? "", overflow: TextOverflow.ellipsis),
-          Text(_getTimeString(info.date, context))
-        ]
-      )
-    );
-  }
-}
-
-class ChatInfo {
-  String? image;
-  String name;
-  String? lastMessage;
-  DateTime? date;
-  int unreadMessagesCount;
-
-  ChatInfo({required this.name, this.image, this.lastMessage, this.date, required this.unreadMessagesCount});
-
-  factory ChatInfo.fromJSON(Map<String, dynamic> map) {
-    return ChatInfo(
-      name: map["userName"] ?? "Name Undefined",
-      image: map["userAvatar"] == null ? null : "assets/data/avatars/${map["userAvatar"]}",
-      lastMessage: map["lastMessage"],
-      date: map["date"] == null ? null : DateTime.fromMillisecondsSinceEpoch(map["date"]),
-      unreadMessagesCount: map["countUnreadMessages"] != null && map["countUnreadMessages"] >= 0 ? map["countUnreadMessages"] : 0
     );
   }
 }

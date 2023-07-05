@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import "package:flutter_practice/src/app.dart";
+import 'package:flutter_practice/src/chat_info.dart';
+import 'package:flutter_practice/src/chat_tile.dart';
 
 class ChatSearchWidget extends StatefulWidget {
 
