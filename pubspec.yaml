@@ -40,6 +40,7 @@ dependencies:
   dart_date: ^1.2.2
   dynamic_color: ^1.6.5
   window_manager: ^0.3.5
+  flutter_native_splash: ^2.3.1
 
 dev_dependencies:
   flutter_test:
@@ -93,3 +94,11 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_native_splash:
+  color: "#b9aeea"
+  dark_color: "#4a4a63"
+
+  android_12:
+    color: "#b9aeea"
+    dark_color: "#4a4a63"
