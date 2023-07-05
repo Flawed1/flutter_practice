@@ -53,7 +53,18 @@ class MyHomePage extends StatelessWidget {
             waitDuration: const Duration(seconds: 1),
             child: IconButton(
               icon: const Icon(Icons.search),
-              onPressed: () => Navigator.push(context, PageRouteBuilder(pageBuilder: (context, __, ___) => const ChatSearchWidget())),
+              onPressed: () => Navigator.push(context, PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 200),
+                reverseTransitionDuration: const Duration(milliseconds: 200),
+                pageBuilder: (context, animation, secondaryAnimation) => const ChatSearchWidget(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: child
+                  );
+                },
+              )
+              ),
             )
           )
         ],
