@@ -83,37 +83,60 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ListView.builder(
         itemCount: chatList.length,
         itemBuilder: (BuildContext context, int index) {
-          return MenuAnchor(
-            childFocusNode: _tileFocusNode,
-            anchorTapClosesMenu: true,
-            builder: (context, controller, child) {
-              return ChatTile(
-                info: chatList[index],
-                number: index,
-                focusNode: _tileFocusNode,
-                onLongPress: () {
-                  if (controller.isOpen) {
-                    controller.close();
-                  }
-                  else {
-                    controller.open();
-                  }
-                }
-              );
-            },
-            menuChildren: <Widget>[
-              MenuItemButton(
-                leadingIcon: const Icon(Icons.chat_bubble_rounded),
-                onPressed: chatList[index].unreadMessagesCount == 0 ?
-                null :
-                () {
-                  setState(() {
-                    chatList[index].unreadMessagesCount = 0;
-                  });
-                },
-                child: const Text("Mark as read")
+          return Dismissible(
+            key: UniqueKey(),
+            background: Container(
+              color: Colors.redAccent,
+              child: const Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Icon(Icons.delete, size: 30)
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Icon(Icons.delete, size: 30)
+                  ),
+                ],
               )
-            ],
+            ),
+            onDismissed:(direction) {
+              setState(() {
+                chatList.removeAt(index);
+              });
+            },
+            child: MenuAnchor(
+              childFocusNode: _tileFocusNode,
+              anchorTapClosesMenu: true,
+              builder: (context, controller, child) {
+                return ChatTile(
+                  info: chatList[index],
+                  number: index,
+                  focusNode: _tileFocusNode,
+                  onLongPress: () {
+                    if (controller.isOpen) {
+                      controller.close();
+                    }
+                    else {
+                      controller.open();
+                    }
+                  }
+                );
+              },
+              menuChildren: <Widget>[
+                MenuItemButton(
+                  leadingIcon: const Icon(Icons.chat_bubble_rounded),
+                  onPressed: chatList[index].unreadMessagesCount == 0 ?
+                  null :
+                  () {
+                    setState(() {
+                      chatList[index].unreadMessagesCount = 0;
+                    });
+                  },
+                  child: const Text("Mark as read")
+                )
+              ],
+            )
           );
         }
       )
